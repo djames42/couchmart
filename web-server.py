@@ -27,6 +27,7 @@ import settings
 
 
 socket_list = []
+coll = {}
 bucket_name = settings.BUCKET_NAME
 user = settings.USERNAME
 password = settings.PASSWORD
@@ -38,6 +39,12 @@ cluster = TxCluster.connect(connection_string='couchbase://{0}'.format(nodes),
                             options=ClusterOptions(PasswordAuthenticator(user, password)))
 bucket = cluster.bucket(bucket_name)
 df_coll = bucket.default_collection()
+coll["dan"] = bucket.scope("dan").collection("orders")
+coll["austin"] = bucket.scope("austin").collection("orders")
+coll["boyd"] = bucket.scope("boyd").collection("orders")
+coll["tony"] = bucket.scope("tony").collection("orders")
+coll["kevin"] = bucket.scope("kevin").collection("orders")
+coll["chitra"] = bucket.scope("chitra").collection("orders")
 fts_nodes = None
 fts_enabled = False
 nodes = []
@@ -154,7 +161,8 @@ class SubmitHandler(tornado.web.RequestHandler):
                                      datetime.datetime.utcnow().isoformat())
         data['ts'] = int(time.time())
         data['type'] = "order"
-        yield df_coll.upsert(key, data)
+        # yield df_coll.upsert(key, data)
+        yield coll[data['name']].upsert(key, data)
 
 
 class SearchHandler(tornado.web.RequestHandler):
