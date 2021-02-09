@@ -45,6 +45,7 @@ coll["boyd"] = bucket.scope("orders").collection("boyd")
 coll["tony"] = bucket.scope("orders").collection("tony")
 coll["kevin"] = bucket.scope("orders").collection("kevin")
 coll["chitra"] = bucket.scope("orders").collection("chitra")
+corona_coll = bucket.scope("product").collection("products")
 fts_nodes = None
 fts_enabled = False
 nodes = []
@@ -135,8 +136,12 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
 class ShopHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
-        items = yield df_coll.get("items")
-        items = yield df_coll.get_multi(items.content['items'])
+        items_orig = yield df_coll.get("items")
+        items_orig = yield df_coll.get_multi(items_orig.content['items'])
+        items_corona = yield corona_coll.get("items")
+        items_corona = yield corona_coll.get_multi(items_corona.content['items'])
+
+        items = items_orig
 
         items_dict = {}
         for item in items:
