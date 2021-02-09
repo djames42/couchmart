@@ -136,12 +136,12 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
 class ShopHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
-        items_orig = yield df_coll.get("items")
-        items_orig = yield df_coll.get_multi(items_orig.content['items'])
+        items_original = yield df_coll.get("items")
+        items_original = yield df_coll.get_multi(items_original.content['items'])
         items_corona = yield corona_coll.get("items")
         items_corona = yield corona_coll.get_multi(items_corona.content['items'])
 
-        items = items_orig
+        items = items_corona
 
         items_dict = {}
         for item in items:

@@ -43,7 +43,7 @@ $(".btn-product").click(function (event) {
     }
 });
 
-jQuery(".corona").click(function () {
+$("#corona").change(function () {
     alert("changed");
 });
 
